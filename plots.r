@@ -3,4 +3,6 @@ cat=c('Heating','Cooling','Lighting','Equipment','Fans','Pumps')
 val=data.frame(cat,EUI)
 ggplot(val,aes(cat,EUI))+geom_col()+xlab('')+ylab('EUI [kBtu/sqft]')
 
+x=c(1,2,3,4)
 
+c=x*2
