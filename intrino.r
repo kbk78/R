@@ -5,6 +5,15 @@ require("httr")
 username = "a8e617296cfd2c16b3f7398b1e33e8f6"
 password = "a072f834567f776fda7c3635c968b38e"
 
+getstock=function(tic){
+tic = "BA"
+
+price <- paste("https://api.intrinio.com/prices?identifier=",tic,sep="")
+tp <- GET(price, authenticate(username, password, type = "basic")) 
+return(tp)
+}
+    
+
 ----------------------------------------------------
 #################################################################################################
 
