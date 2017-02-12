@@ -1,18 +1,45 @@
-
 rm(list=ls(())
 install.packages("httr")
-require("httr")
+library("zoo")
+library("xml2")
+library("plyr")
+library("httr")
+
 username = "a8e617296cfd2c16b3f7398b1e33e8f6"
 password = "a072f834567f776fda7c3635c968b38e"
 
-getstock=function(tic){
-tic = "BA"
 
-price <- paste("https://api.intrinio.com/prices?identifier=",tic,sep="")
-tp <- GET(price, authenticate(username, password, type = "basic")) 
-return(tp)
+
+# 52_week_high 52_week_low average_daily_volume bookvaluepershare dividend
+
+getstockhist=function(tic,item,start_date,end_date){
+#q <- paste("https://api.intrinio.com/historical_data?ticker=",tic,'&item=',item,sep="")
+q <- paste("https://api.intrinio.com/historical_data?ticker=",tic,
+           "&item=", item,
+           "&start_date=",start_date,
+           "&end_date=",end_date,
+            sep="") 
+tp <- GET(q, authenticate("a8e617296cfd2c16b3f7398b1e33e8f6","a072f834567f776fda7c3635c968b38e", type = "basic"))
+z=head(unlist(content(tp,'parsed')),-7)
+b = as.data.frame(matrix(z,length(z)/2, byrow = T))
+names(b)=c('date',item)
+rownames(b) = b$date
+b$date=NULL
+return(b)
 }
-    
+
+getprice=function(tic,item,start_date,end_date){
+  q <- paste("https://api.intrinio.com/prices?identifier=",tic,sep="")
+  tp <- GET(q, authenticate("a8e617296cfd2c16b3f7398b1e33e8f6","a072f834567f776fda7c3635c968b38e", type = "basic"))
+  z=head(unlist(content(tp,'parsed')),-7)
+  b = as.data.frame(matrix(z,length(z)/2, byrow = T))
+  names(b)=c('date',item)
+  rownames(b) = b$data.date
+  return(b)
+}
+ap = getstockhist('AAPL','pricetoearnings',"2010-01-01","2016-10-01")
+
+
 
 ----------------------------------------------------
 #################################################################################################
